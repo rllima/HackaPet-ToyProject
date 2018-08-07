@@ -12,6 +12,8 @@ import javax.swing.SwingConstants;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
+import javafx.scene.control.ToolBar;
+
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JButton;
@@ -26,6 +28,8 @@ import java.util.Locale;
 import javax.swing.JFormattedTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 public class Store {
 
@@ -36,6 +40,8 @@ public class Store {
 	private boolean registerPanelVisibility = false;
 	private JPanel registerPanel;
 	private JFormattedTextField formattedTextFieldProductPrice;
+	private JPanel mainPanel;
+	private JButton btnUpdateProduct;
 
 	/**
 	 * Launch the application.
@@ -69,12 +75,36 @@ public class Store {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JPanel mainPanel = new JPanel();
+		mainPanel = new JPanel();
+		mainPanel.setBounds(0, 70, 648, 325);
 		mainPanel.setBackground(SystemColor.menu);
-		mainPanel.setBounds(0, 29, 648, 366);
 		frame.getContentPane().add(mainPanel);
 		mainPanel.setLayout(null);
+		JToolBar toolBar = new JToolBar();
+		toolBar.setBounds(0, 33, 648, 26);
+		frame.getContentPane().add(toolBar);
+		toolBar.setVisible(false);
 		
+		JButton btnNewProduct = new JButton("Novo Produto");
+		btnNewProduct.setFont(new Font("SansSerif", Font.BOLD, 11));
+		btnNewProduct.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				buildRegisterPanel();
+				mainPanel.repaint();
+			}
+		});
+		
+		toolBar.add(btnNewProduct);
+		
+		btnUpdateProduct = new JButton("Atualizar Produto");
+		btnUpdateProduct.setEnabled(false);
+		btnUpdateProduct.setFont(new Font("SansSerif", Font.BOLD, 11));
+		toolBar.add(btnUpdateProduct);
+		
+		JButton btnRemoveProduct = new JButton("Remover Produto");
+		btnRemoveProduct.setEnabled(false);
+		btnRemoveProduct.setFont(new Font("SansSerif", Font.BOLD, 11));
+		toolBar.add(btnRemoveProduct);
 		JLabel titleLabel = new JLabel("HackaPet - Store");
 		titleLabel.setForeground(new Color(255, 140, 0));
 		titleLabel.setFont(new Font("Arial Black", Font.PLAIN, 35));
@@ -82,12 +112,29 @@ public class Store {
 		titleLabel.setBounds(74, 0, 503, 35);
 		mainPanel.add(titleLabel);
 		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 2, 648, 32);
+		frame.getContentPane().add(menuBar);
+		
+		JMenuItem mntmProdutos_1 = new JMenuItem("Produtos");
+		mntmProdutos_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				toolBar.setVisible(true);
+			}
+		});
+		menuBar.add(mntmProdutos_1);
+		
+		
+	}
+	
+	public void buildRegisterPanel() {
 		registerPanel = new JPanel();
 		registerPanel.setBackground(new Color(255, 255, 255));
 		registerPanel.setVisible(false);
 		registerPanel.setBounds(0, 74, 648, 247);
 		mainPanel.add(registerPanel);
 		registerPanel.setLayout(null);
+		registerPanel.setVisible(true);
 		
 		JLabel lblProductName = new JLabel("Nome:");
 		lblProductName.setBounds(10, 24, 46, 14);
@@ -104,7 +151,7 @@ public class Store {
 		JLabel lblProdutCode = new JLabel("C\u00F3digo");
 		lblProdutCode.setBounds(10, 120, 46, 14);
 		registerPanel.add(lblProdutCode);
-		registerPanel.setVisible(false);
+		
 		
 		textFieldProductName = new JTextField();
 		textFieldProductName.setBounds(87, 21, 226, 20);
@@ -135,8 +182,8 @@ public class Store {
 		btnInsertConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Validade, save
-				registerPanel.setVisible(!registerPanel.isVisible());
-				cleanFieldsRegister();
+				mainPanel.remove(registerPanel);
+				mainPanel.repaint();
 				
 			}
 		});
@@ -144,37 +191,7 @@ public class Store {
 		btnInsertConfirm.setBounds(272, 190, 89, 23);
 		registerPanel.add(btnInsertConfirm);
 		
-		JToolBar toolBar = new JToolBar();
-		toolBar.setBounds(0, 2, 648, 26);
-		frame.getContentPane().add(toolBar);
-		
-		JButton btnNewProduct = new JButton("Novo Produto");
-		btnNewProduct.setFont(new Font("SansSerif", Font.BOLD, 11));
-		btnNewProduct.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				registerPanel.setVisible(true);
-				
-			}
-		});
-		
-		toolBar.add(btnNewProduct);
-		
-		JButton btnUpdateProduct = new JButton("Atualizar Produto");
-		btnUpdateProduct.setFont(new Font("SansSerif", Font.BOLD, 11));
-		toolBar.add(btnUpdateProduct);
-		
-		JButton btnRemoveProduct = new JButton("Remover Produto");
-		btnRemoveProduct.setFont(new Font("SansSerif", Font.BOLD, 11));
-		toolBar.add(btnRemoveProduct);
-	}
-	public void buildRegisterPanel() {
-		
-	}
-	public void cleanFieldsRegister() {
-		textFieldProductName.setText("");
-		textFieldProductDescription.setText("");
-		textFieldProductCode.setText("");
-		formattedTextFieldProductPrice.setText("0");
-		
+	
+	
 	}
 }
