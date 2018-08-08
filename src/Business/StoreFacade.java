@@ -6,7 +6,7 @@ import Business.exception.ProductAlreadyExistException;
 import Business.exception.ProductNotFoundException;
 import Data.Deserialize;
 import Data.Serialize;
-import Data.productRepository;
+import Data.ProductRepository;
 
 public class StoreFacade {
 	private ProductBusiness repProd;
@@ -19,7 +19,7 @@ public class StoreFacade {
 		return instance;
 	}
 	public StoreFacade() {
-		this.repProd = new ProductBusiness(new productRepository(new Serialize("/Desktop/DataBase"),new Deserialize("/Desktop/DataBase")));
+		this.repProd = new ProductBusiness(new ProductRepository(new Serialize("/DataBase"),new Deserialize("/DataBase")));
 		this.productAmount = 0;
 	}
 	

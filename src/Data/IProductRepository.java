@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import Business.Product;
 
-public interface productRepositoryInterface {
+public interface IProductRepository {
 	
 	void insert(Product product) throws IOException, Exception;
 	Product search(String cod) throws Exception;

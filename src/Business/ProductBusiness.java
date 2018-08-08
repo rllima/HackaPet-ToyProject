@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 import Business.exception.ProductAlreadyExistException;
 import Business.exception.ProductNotFoundException;
-import Data.productRepository;
+import Data.ProductRepository;
 
 public class ProductBusiness {
-	private productRepository rep;
+	private ProductRepository rep;
 	
-	public ProductBusiness(productRepository rep) {
+	public ProductBusiness(ProductRepository rep) {
 		this.rep = rep;
 	}
 	

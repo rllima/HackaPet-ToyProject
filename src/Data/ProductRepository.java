@@ -6,17 +6,17 @@ import java.util.ArrayList;
 
 import Business.Product;
 
-public class productRepository implements productRepositoryInterface {
+public class ProductRepository implements IProductRepository {
 	
 	private Serialize serialize;
 	private Deserialize deserialize;
 	private ArrayList<Product> prods;
 	private String fileName;
-	public productRepository(Serialize serialize,Deserialize deserialize) {
+	public ProductRepository(Serialize serialize,Deserialize deserialize) {
 		this.serialize = serialize;
 		this.deserialize = deserialize;
 		this.prods = new ArrayList<Product>();
-		this.fileName = serialize.getPath() + "/" + "stock";
+		this.fileName = "stock";
 		
 	}
 	
