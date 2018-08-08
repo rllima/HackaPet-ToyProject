@@ -2,41 +2,100 @@ package Data;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import Business.Product;
 
 public class productRepository implements productRepositoryInterface {
 	
-	Serialize serialize = new Serialize("/Documents/DataBase");
-	Deserialize deserialize = new Deserialize(serialize.getPath());
-
+	private Serialize serialize;
+	private Deserialize deserialize;
+	private ArrayList<Product> prods;
+	private String fileName;
+	public productRepository(Serialize serialize,Deserialize deserialize) {
+		this.serialize = serialize;
+		this.deserialize = deserialize;
+		this.prods = new ArrayList<Product>();
+		this.fileName = serialize.getPath() + "/" + "stock";
+		
+	}
+	
+	
 	@Override
-	public void insert(Product product) throws IOException {
-		String fileName = "/"+ product.getCod();
-		serialize.serialize(product,fileName);
+	public void insert(Product product) throws Exception {
+		if(!exist()) {
+			prods.add(product);
+			serialize.serialize(prods, fileName);
+		}else {
+			prods = (ArrayList<Product>) deserialize.deserializer(fileName);
+			prods.add(product);
+			serialize.serialize(prods, fileName);
+		}
+		
 		
 	}
 
 	@Override
 	public Product search(String cod) throws Exception {
-		String fileName = deserialize.getPath() + "/"+cod;
-		Product prod = (Product) deserialize.deserializer(fileName);
-		return prod;
+		Product result = null;
+		if(exist()) {
+			ArrayList<Product> aux = (ArrayList<Product>)deserialize.deserializer(fileName);
+			for(Product prod : aux) {
+				if(prod.getCod().equalsIgnoreCase(cod)) {
+					result = prod;
+					return result;
+				}
+			}
+		}
+		return result;
+		
+		
 	}
 
 	@Override
 	public void update(Product product) throws Exception {
-		Product prodTemp = search(product.getCod());
-		prodTemp = product;
-		serialize.serialize(prodTemp, "/"+prodTemp.getCod());
+		if(exist()) {
+			ArrayList<Product> aux = (ArrayList<Product>)deserialize.deserializer(fileName);
+			ArrayList<Product> aux1 = (ArrayList<Product>)deserialize.deserializer(fileName);
+			for(int i = 0; i < aux.size(); i++) {
+				Product prod = aux.get(i);
+				if(prod.getCod().equalsIgnoreCase(product.getCod())) {
+					aux1.remove(i);
+					aux1.add(product);
+				}
+			}
+			serialize.serialize(aux1, fileName);
+		}
+		
 	}
 
 	@Override
 	public void remove(String cod) throws Exception {
-		Product prodTemp = search(cod);
-		File deleteFile = new File(serialize.getPath()+"/"+prodTemp.getCod());
-		deleteFile.delete();
+		if(exist()) {
+			ArrayList<Product> aux = (ArrayList<Product>)deserialize.deserializer(fileName);
+			ArrayList<Product> aux1 = (ArrayList<Product>)deserialize.deserializer(fileName);
+
+			for(int i = 0; i < aux.size(); i++) {
+				Product prod = aux.get(i);
+				if(prod.getCod().equalsIgnoreCase(cod)) {
+					aux1.remove(i);
+				}
+			}
+			serialize.serialize(aux1, fileName);
+		}
 		
+	}
+	public ArrayList<Product> getAllProducts() throws Exception {
+		if(exist()) {
+			ArrayList<Product> aux = (ArrayList<Product>)deserialize.deserializer(fileName);
+			return aux;
+		}
+		return null;
+	}
+	public boolean exist() {
+		File file = new File(fileName);
+		if(file.exists()) return true;
+		else return false;
 	}
 
 }

@@ -20,7 +20,7 @@ public class Serialize {
     	if(!directory.exists()) {
     		directory.mkdir();
     	}
-        FileOutputStream outfile = new FileOutputStream(this.path+fileName);
+        FileOutputStream outfile = new FileOutputStream(fileName);
         ObjectOutputStream outobject = new ObjectOutputStream(outfile);
         outobject.writeObject(obj);
         outobject.close();

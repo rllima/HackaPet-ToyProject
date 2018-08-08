@@ -1,7 +1,11 @@
 package Business;
 
+import java.util.ArrayList;
+
 import Business.exception.ProductAlreadyExistException;
 import Business.exception.ProductNotFoundException;
+import Data.Deserialize;
+import Data.Serialize;
 import Data.productRepository;
 
 public class StoreFacade {
@@ -15,7 +19,7 @@ public class StoreFacade {
 		return instance;
 	}
 	public StoreFacade() {
-		this.repProd = new ProductBusiness(new productRepository());
+		this.repProd = new ProductBusiness(new productRepository(new Serialize("/Desktop/DataBase"),new Deserialize("/Desktop/DataBase")));
 		this.productAmount = 0;
 	}
 	
@@ -33,6 +37,9 @@ public class StoreFacade {
 	}
 	public Product searchProduct(String cod) throws ProductNotFoundException, Exception {
 		return repProd.search(cod);
+	}
+	public ArrayList<Product> getProducts() throws Exception{
+		return repProd.getProducts();
 	}
 
 }

@@ -1,5 +1,7 @@
 package Business;
 
+import java.util.ArrayList;
+
 import Business.exception.ProductAlreadyExistException;
 import Business.exception.ProductNotFoundException;
 import Data.productRepository;
@@ -37,6 +39,9 @@ public class ProductBusiness {
 			throw new ProductNotFoundException();
 		else
 			rep.update(product);
+	}
+	public ArrayList<Product> getProducts() throws Exception{
+		return rep.getAllProducts();
 	}
 
 }
