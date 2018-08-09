@@ -46,6 +46,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.UIManager;
 
 public class Store {
 
@@ -95,20 +96,15 @@ public class Store {
 		frame.getContentPane().setLayout(null);
 		frame.setResizable(false);
 		mainPanel = new JPanel();
-		mainPanel.setBounds(10, 70, 638, 324);
+		mainPanel.setBounds(0, 70, 658, 335);
 		mainPanel.setBackground(SystemColor.menu);
 		frame.getContentPane().add(mainPanel);
 		mainPanel.setLayout(null);
-		try {
-			buildTable();
-		} catch (Exception e3) {
-			// TODO Auto-generated catch block
-			e3.printStackTrace();
-		}
 		JToolBar toolBar = new JToolBar();
-		toolBar.setBounds(0, 33, 658, 26);
+		toolBar.setBounds(0, 33, 648, 26);
 		frame.getContentPane().add(toolBar);
 		toolBar.setVisible(false);
+	
 		JButton btnNewProduct = new JButton("Novo Produto");
 		btnNewProduct.setFont(new Font("SansSerif", Font.BOLD, 11));
 		btnNewProduct.addActionListener(new ActionListener() {
@@ -172,7 +168,8 @@ public class Store {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			
+				
+				
 			}
 		});
 		btnRemoveProduct.setEnabled(false);
@@ -186,7 +183,7 @@ public class Store {
 		mainPanel.add(titleLabel);
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 4, 658, 31);
+		menuBar.setBounds(0, 2, 648, 32);
 		frame.getContentPane().add(menuBar);
 		
 		JMenuItem mntmProdutos_1 = new JMenuItem("Produtos");
@@ -208,41 +205,100 @@ public class Store {
 	}
 	
 	public void buildRegisterPanel(int flag) {
-		registerPanel = new RegisterPanel();
+		registerPanel = new JPanel();
+		registerPanel.setBackground(new Color(255, 255, 255));
+		registerPanel.setVisible(false);
+		registerPanel.setBounds(0, 74, 658, 227);
 		mainPanel.add(registerPanel);
-		((RegisterPanel) registerPanel).getBtnInsertConfirm().addActionListener(new ActionListener() {
+		registerPanel.setLayout(null);
+		registerPanel.setVisible(true);
+		
+		JLabel lblProductName = new JLabel("Nome:");
+		lblProductName.setBounds(10, 24, 46, 14);
+		registerPanel.add(lblProductName);
+		
+		JLabel lblProductDescription = new JLabel("Descri\u00E7\u00E3o:");
+		lblProductDescription.setBounds(10, 49, 67, 22);
+		registerPanel.add(lblProductDescription);
+		
+		JLabel lblProductPrice = new JLabel("Pre\u00E7o R$ :");
+		lblProductPrice.setBounds(10, 87, 67, 14);
+		registerPanel.add(lblProductPrice);
+		
+		JLabel lblProdutCode = new JLabel("C\u00F3digo");
+		lblProdutCode.setBounds(10, 120, 46, 14);
+		registerPanel.add(lblProdutCode);
+		
+		
+		textFieldProductName = new JTextField();
+		textFieldProductName.setBounds(87, 21, 226, 20);
+		registerPanel.add(textFieldProductName);
+		textFieldProductName.setColumns(10);
+		
+		textFieldProductDescription = new JTextField();
+		textFieldProductDescription.setBounds(87, 49, 226, 22);
+		registerPanel.add(textFieldProductDescription);
+		textFieldProductDescription.setColumns(10);
+		
+		DecimalFormat decimal = new DecimalFormat("#,##0.00");
+        NumberFormatter numFormatter = new NumberFormatter(decimal);
+        numFormatter.setFormat(decimal);
+        numFormatter.setAllowsInvalid(false);
+        DefaultFormatterFactory dfFactory = new DefaultFormatterFactory(numFormatter);
+		
+		formattedTextFieldProductPrice = new JFormattedTextField(dfFactory);
+		formattedTextFieldProductPrice.setBounds(88, 83, 113, 22);
+		registerPanel.add(formattedTextFieldProductPrice);
+		
+		textFieldProductCode = new JTextField();
+		textFieldProductCode.setBounds(88, 117, 113, 20);
+		registerPanel.add(textFieldProductCode);
+		textFieldProductCode.setColumns(10);
+		
+		JButton btnInsertConfirm = new JButton("Confirmar");
+		btnInsertConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Validade, save
 				try {
-					Product prod = ((RegisterPanel) registerPanel).buildProduct();
-					if(((RegisterPanel) registerPanel).validateProduct(prod)) {
+					Product prod = buildProduct();
+					if(validateProduct(prod)) {
 						if(flag == 1) {
-							store.getInstance().insertProduct(prod);
+							store.getInstance().insertProduct(buildProduct());
 							JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso!");
 							mainPanel.remove(registerPanel);
 							mainPanel.repaint();
 						}else if(flag == 2){
-							store.getInstance().updateProduct(prod);
+							store.getInstance().updateProduct(buildProduct());
 							JOptionPane.showMessageDialog(null, "Produto atualizado com sucesso!");
 							mainPanel.remove(registerPanel);
 							mainPanel.repaint();
 							buildTable();
+							
 						}
 					}
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				
+				
 			}
 		});
+		btnInsertConfirm.setFont(new Font("SansSerif", Font.BOLD, 11));
+		btnInsertConfirm.setBounds(218, 158, 95, 23);
+		registerPanel.add(btnInsertConfirm);
 		
-		((RegisterPanel) registerPanel).getBtnCancelar().addActionListener(new ActionListener() {
+		JButton btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mainPanel.remove(registerPanel);
 				mainPanel.repaint();
 			}
 		});
-	
+		btnCancelar.setFont(new Font("SansSerif", Font.BOLD, 11));
+		btnCancelar.setBounds(323, 158, 95, 23);
+		registerPanel.add(btnCancelar);
+		
 	}
 	public void buildTable() throws Exception {
 		String [] cols = {"Nome", "Código", "Preço", "Descrição"}; 
@@ -250,12 +306,13 @@ public class Store {
 		dtm.setColumnIdentifiers(cols);
 		ArrayList<Product> stock = store.getInstance().getProducts();
 		table = new JTable();
+		table.setBackground(UIManager.getColor("InternalFrame.borderLight"));
 		table.setModel(dtm);
 		if(stock != null)
 			for(Product prod : stock) {
 				dtm.addRow(new Object[] {prod.getName(), prod.getCod(), prod.getPrice(), prod.getDescription()});
 			}
-		table.setBounds(0, 57, 638, 267);
+		table.setBounds(10, 55, 638, 269);
 		mainPanel.add(table);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -266,5 +323,28 @@ public class Store {
 		});
 		table.setFillsViewportHeight(true);
 		table.setVisible(true);
+	}
+	public Product buildProduct() {
+		String name = textFieldProductName.getText();
+		String code = textFieldProductCode.getText();
+		String description = textFieldProductDescription.getText();
+		Object o = formattedTextFieldProductPrice.getValue();
+		double price = 0;
+		if(o != null)
+			price = new Double(((Number) o).doubleValue());
+		Product prod = new Product(name,description, price, code);
+		return prod;
+	}
+	public boolean validateProduct(Product prod) {
+		if(prod.getName().equalsIgnoreCase("") || prod.getCod().equalsIgnoreCase("") || prod.getPrice() == 0) {
+			try {
+				throw new ProductFieldsEmpty();
+			} catch (ProductFieldsEmpty e) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(null,e.getMessage());
+				return false;
+			}
+		}
+		return true;
 	}
 }
